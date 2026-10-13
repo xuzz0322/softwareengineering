@@ -1,0 +1,168 @@
+PASS health endpoint connects to MySQL
+PASS anonymous grade access denied
+PASS wrong password rejected
+PASS login cookie session returns student role
+PASS missing CSRF token denied
+PASS students cannot maintain users
+PASS professor cannot read student report-card route
+PASS report card contains only own completed grades
+PASS seed text is UTF-8 Chinese without mojibake
+PASS expanded demo contains sixty students and twelve professors
+PASS new demo accounts can log in and professor has assigned course
+PASS catalog includes prerequisites and teachers
+PASS submitting fewer than four primary choices denied
+PASS missing prerequisite denied
+PASS failed submission leaves no partial enrollment
+PASS overlapping class times denied
+PASS duplicate course sections denied
+PASS draft can be saved without enrolling
+PASS foreign schedule owner in body rejected
+PASS foreign schedule owner in query rejected
+PASS foreign schedule delete body rejected
+PASS foreign schedule delete query rejected
+PASS foreign schedule read rejected
+PASS rejected ownership attempts preserve both schedules
+PASS professor and registrar cannot edit student schedule
+PASS valid four plus two schedule accepted
+PASS owner cannot be spoofed in request body
+PASS failed update rolls back previous schedule
+PASS deleting schedule releases seats
+PASS deleting absent schedule gives 404
+PASS professor cannot take another professor class
+PASS foreign teaching attempt leaves all assignments unchanged
+PASS professor timetable conflicts denied atomically
+PASS eligible professor can select teaching
+PASS professor can deselect teaching
+PASS professor only sees own rosters
+PASS grades restricted to course owner
+PASS students cannot submit grades
+PASS registrar cannot submit grades
+PASS forged role cannot authorize student grading
+PASS denied grade edits leave grades unchanged
+PASS current semester grades cannot be entered
+PASS invalid letter grade rejected
+PASS partial grade update preserves skipped students
+PASS student sees corrected grade
+PASS student cannot create student
+PASS student cannot update student or forge registrar role
+PASS student cannot delete student
+PASS professor cannot create student
+PASS professor cannot update student or forge registrar role
+PASS professor cannot delete student
+PASS denied personnel edits preserve all users
+PASS registrar creates user with safely bound input
+PASS registrar can update student
+PASS invalid calendar date rejected
+PASS duplicate identity number rejected
+PASS registrar can delete unused student
+PASS deleted user cannot log in
+PASS professor with teaching assignments cannot be deleted
+PASS concurrent capacity: eight accepted and four rejected
+PASS MySQL enrollment never exceeds capacity ten
+PASS late submit to newly full course rejected
+PASS register schedule with teacherless primary for close scenario
+PASS saving submitted edits retains previous enrollment
+PASS draft editing preserves submitted alternate priority
+PASS unsubmitted draft retained for closure test
+PASS close rejected while registration transaction in progress
+PASS finance outage simulation enabled
+PASS close registration commits exactly three submitted students
+PASS teacherless primary replaced in alternate priority order
+PASS under enrolled classes cancelled
+PASS unsubmitted draft excluded from billing
+PASS tuition equals final course fees
+PASS failed billing retained for retry
+PASS automatic billing delivery recovers after outage
+PASS finance receiver receives one record per student semester
+PASS duplicate delivery does not duplicate billing receipt
+PASS closed registration rejects student changes
+PASS closed registration rejects teaching changes
+PASS repeated closure rejected without duplicate bills
+PASS logout invalidates session
+{
+  "passed": 81,
+  "seconds": 9.69,
+  "tests": [
+    "health endpoint connects to MySQL",
+    "anonymous grade access denied",
+    "wrong password rejected",
+    "login cookie session returns student role",
+    "missing CSRF token denied",
+    "students cannot maintain users",
+    "professor cannot read student report-card route",
+    "report card contains only own completed grades",
+    "seed text is UTF-8 Chinese without mojibake",
+    "expanded demo contains sixty students and twelve professors",
+    "new demo accounts can log in and professor has assigned course",
+    "catalog includes prerequisites and teachers",
+    "submitting fewer than four primary choices denied",
+    "missing prerequisite denied",
+    "failed submission leaves no partial enrollment",
+    "overlapping class times denied",
+    "duplicate course sections denied",
+    "draft can be saved without enrolling",
+    "foreign schedule owner in body rejected",
+    "foreign schedule owner in query rejected",
+    "foreign schedule delete body rejected",
+    "foreign schedule delete query rejected",
+    "foreign schedule read rejected",
+    "rejected ownership attempts preserve both schedules",
+    "professor and registrar cannot edit student schedule",
+    "valid four plus two schedule accepted",
+    "owner cannot be spoofed in request body",
+    "failed update rolls back previous schedule",
+    "deleting schedule releases seats",
+    "deleting absent schedule gives 404",
+    "professor cannot take another professor class",
+    "foreign teaching attempt leaves all assignments unchanged",
+    "professor timetable conflicts denied atomically",
+    "eligible professor can select teaching",
+    "professor can deselect teaching",
+    "professor only sees own rosters",
+    "grades restricted to course owner",
+    "students cannot submit grades",
+    "registrar cannot submit grades",
+    "forged role cannot authorize student grading",
+    "denied grade edits leave grades unchanged",
+    "current semester grades cannot be entered",
+    "invalid letter grade rejected",
+    "partial grade update preserves skipped students",
+    "student sees corrected grade",
+    "student cannot create student",
+    "student cannot update student or forge registrar role",
+    "student cannot delete student",
+    "professor cannot create student",
+    "professor cannot update student or forge registrar role",
+    "professor cannot delete student",
+    "denied personnel edits preserve all users",
+    "registrar creates user with safely bound input",
+    "registrar can update student",
+    "invalid calendar date rejected",
+    "duplicate identity number rejected",
+    "registrar can delete unused student",
+    "deleted user cannot log in",
+    "professor with teaching assignments cannot be deleted",
+    "concurrent capacity: eight accepted and four rejected",
+    "MySQL enrollment never exceeds capacity ten",
+    "late submit to newly full course rejected",
+    "register schedule with teacherless primary for close scenario",
+    "saving submitted edits retains previous enrollment",
+    "draft editing preserves submitted alternate priority",
+    "unsubmitted draft retained for closure test",
+    "close rejected while registration transaction in progress",
+    "finance outage simulation enabled",
+    "close registration commits exactly three submitted students",
+    "teacherless primary replaced in alternate priority order",
+    "under enrolled classes cancelled",
+    "unsubmitted draft excluded from billing",
+    "tuition equals final course fees",
+    "failed billing retained for retry",
+    "automatic billing delivery recovers after outage",
+    "finance receiver receives one record per student semester",
+    "duplicate delivery does not duplicate billing receipt",
+    "closed registration rejects student changes",
+    "closed registration rejects teaching changes",
+    "repeated closure rejected without duplicate bills",
+    "logout invalidates session"
+  ]
+}

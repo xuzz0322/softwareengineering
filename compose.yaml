@@ -1,0 +1,44 @@
+name: course-registration
+services:
+  db:
+    image: mysql:8.4
+    ports:
+      - "127.0.0.1:${MYSQL_HOST_PORT:-3307}:3306"
+    environment:
+      MYSQL_DATABASE: registration
+      MYSQL_USER: registration
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Run scripts/setup.sh first}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run scripts/setup.sh first}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u registration -D registration -e 'SELECT 1 FROM schedules LIMIT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+    restart: unless-stopped
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_USER: registration
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: registration
+      DEMO_PASSWORD: ${DEMO_PASSWORD}
+      BILLING_KEY: ${BILLING_KEY}
+      BILLING_URL: http://127.0.0.1:8080/internal/demo-billing
+      DEMO_BILLING: "1"
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+volumes:
+  mysql_data:
