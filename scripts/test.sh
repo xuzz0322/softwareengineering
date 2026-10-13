@@ -4,6 +4,7 @@ set -eu
 cd "$(dirname "$0")/.."
 sh scripts/setup.sh
 export APP_PORT=18080
+export MYSQL_HOST_PORT=13307
 mkdir -p output
 cleanup() { docker compose -p course-registration-tests down -v > /dev/null 2>&1; }
 trap cleanup EXIT INT TERM

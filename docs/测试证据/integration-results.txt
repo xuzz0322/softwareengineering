@@ -8,6 +8,7 @@ PASS professor cannot read student report-card route
 PASS report card contains only own completed grades
 PASS seed text is UTF-8 Chinese without mojibake
 PASS expanded demo contains sixty students and twelve professors
+PASS seeded submissions match enrolled classes and passed prerequisites
 PASS new demo accounts can log in and professor has assigned course
 PASS catalog includes prerequisites and teachers
 PASS submitting fewer than four primary choices denied
@@ -57,7 +58,7 @@ PASS duplicate identity number rejected
 PASS registrar can delete unused student
 PASS deleted user cannot log in
 PASS professor with teaching assignments cannot be deleted
-PASS concurrent capacity: eight accepted and four rejected
+PASS concurrent capacity: five accepted and seven rejected
 PASS MySQL enrollment never exceeds capacity ten
 PASS late submit to newly full course rejected
 PASS register schedule with teacherless primary for close scenario
@@ -66,9 +67,9 @@ PASS draft editing preserves submitted alternate priority
 PASS unsubmitted draft retained for closure test
 PASS close rejected while registration transaction in progress
 PASS finance outage simulation enabled
-PASS close registration commits exactly three submitted students
+PASS close registration commits six submitted students
 PASS teacherless primary replaced in alternate priority order
-PASS under enrolled classes cancelled
+PASS five classes open and under-enrolled classes cancel
 PASS unsubmitted draft excluded from billing
 PASS tuition equals final course fees
 PASS failed billing retained for retry
@@ -80,8 +81,8 @@ PASS closed registration rejects teaching changes
 PASS repeated closure rejected without duplicate bills
 PASS logout invalidates session
 {
-  "passed": 81,
-  "seconds": 9.69,
+  "passed": 82,
+  "seconds": 9.74,
   "tests": [
     "health endpoint connects to MySQL",
     "anonymous grade access denied",
@@ -93,6 +94,7 @@ PASS logout invalidates session
     "report card contains only own completed grades",
     "seed text is UTF-8 Chinese without mojibake",
     "expanded demo contains sixty students and twelve professors",
+    "seeded submissions match enrolled classes and passed prerequisites",
     "new demo accounts can log in and professor has assigned course",
     "catalog includes prerequisites and teachers",
     "submitting fewer than four primary choices denied",
@@ -142,7 +144,7 @@ PASS logout invalidates session
     "registrar can delete unused student",
     "deleted user cannot log in",
     "professor with teaching assignments cannot be deleted",
-    "concurrent capacity: eight accepted and four rejected",
+    "concurrent capacity: five accepted and seven rejected",
     "MySQL enrollment never exceeds capacity ten",
     "late submit to newly full course rejected",
     "register schedule with teacherless primary for close scenario",
@@ -151,9 +153,9 @@ PASS logout invalidates session
     "unsubmitted draft retained for closure test",
     "close rejected while registration transaction in progress",
     "finance outage simulation enabled",
-    "close registration commits exactly three submitted students",
+    "close registration commits six submitted students",
     "teacherless primary replaced in alternate priority order",
-    "under enrolled classes cancelled",
+    "five classes open and under-enrolled classes cancel",
     "unsubmitted draft excluded from billing",
     "tuition equals final course fees",
     "failed billing retained for retry",

@@ -113,7 +113,21 @@ sh scripts/test.sh
 
 脚本使用 **`course-registration-tests` 独立 Compose 项目、独立卷和 18080 端口**；会重置并删除这个测试项目的数据，不操作 `course-registration` 演示数据库。结果写入 `output/integration-results.txt`，失败则以非零状态退出。若修改了演示密码，设置 `TEST_DEMO_PASSWORD` 为实际值后运行。
 
+测试数据库使用独立的本机 13307 端口，不与演示数据库的 3307 端口冲突。
+
 测试包括数据库真实读写、角色隔离、错误回滚、12 人并发抢位、关闭期间锁定、补位、取消课程、计费断连恢复与幂等重放。C++ 规则单元测试在 Docker 构建时自动执行。
+
+## 开班演示数据
+
+全新数据库会自动执行 `database/004_open_classes_seed.sql`。学期 2 中，student02、student03、student05～student07 已正式提交课表；软件工程、数据库系统、计算机网络各有 5 人，学术英语有 3 人，均达到最低开班人数。概率论原有 2 人，若 student01 提交主选 201/202/203/207、备选 204/205，关闭时无教师的科技写作被取消，第一备选概率论补入后达到 3 人，最终共有 5 个教学班开课。不提交 student01 时也有 4 个班达到条件。新增学生的历史先修成绩、课程时间和授课教师均与这些报名匹配。
+
+已有数据库的初始化 SQL 不会自动重跑。如果学期 2 已关闭，可在确认尚无学期 3 后执行一次 `scripts/prepare-next-demo-term.sql`，它新增开放的“2026 秋季补充演示学期”，保留原学期的最终课表和账单：
+
+```sh
+docker compose exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --default-character-set=utf8mb4 registration' < scripts/prepare-next-demo-term.sql
+```
+
+新学期的 401～405 号班次沿用上述安排：当前 401/402/403 各 5 人、405 为 3 人；student01 可主选 401/402/403/407、备选 404/405，关课后 404 也达到 3 人。请在其他页面演示结束后再关闭选课；关闭动作不能撤销。
 
 前端状态与筛选检查：
 

@@ -63,6 +63,7 @@ catalog = s.call('/offerings')[1]
 offering201 = next(o for o in catalog['offerings'] if o['id']==201)
 check('seed text is UTF-8 Chinese without mojibake', offering201['title'] == '软件工程' and offering201['department'] == '计算机学院' and offering201['room'] == '明理楼 301' and s.call('/me')[1]['user']['name'] == '林同学' and catalog['semester']['name'] == '2026 秋季学期')
 check('expanded demo contains sixty students and twelve professors', sql("SELECT COUNT(*) FROM users WHERE role='STUDENT';") == '60' and sql("SELECT COUNT(*) FROM users WHERE role='PROFESSOR';") == '12')
+check('seeded submissions match enrolled classes and passed prerequisites', sql("SELECT COUNT(*) FROM schedules WHERE semester_id=2 AND status='SUBMITTED';") == '5' and sql("SELECT COUNT(*) FROM enrollments WHERE student_id IN (2005,2006,2007) AND offering_id IN (201,202,203,205);") == '12' and sql("SELECT COUNT(*) FROM enrollments WHERE student_id IN (2005,2006,2007) AND offering_id IN (101,102) AND grade IN ('A','B','C','D');") == '6')
 new_student = Client('student60'); new_professor = Client('prof12')
 check('new demo accounts can log in and professor has assigned course', new_student.call('/me')[1]['user']['role'] == 'STUDENT' and len(new_professor.call('/teaching')[1]) == 1)
 check('catalog includes prerequisites and teachers', len(s.call('/offerings')[1]['offerings']) == 30)
@@ -118,13 +119,14 @@ check('duplicate identity number rejected', a.call('/admin/users','POST',{**body
 check('registrar can delete unused student', a.call('/admin/users/'+str(uid),'DELETE')[0] == 200)
 check('deleted user cannot log in', anon.call('/login','POST',{'username':'temp_user','password':PASSWORD})[0] == 401)
 check('professor with teaching assignments cannot be deleted', a.call('/admin/users/11','DELETE')[0] == 409)
-# Twelve different students compete for eight remaining seats in each of four classes.
+# Twelve different students compete for the five remaining seats in classes
+# 201-203. Class 204 has eight seats, but each submission is atomic.
 for index in range(12):
     sql(f"INSERT INTO users(username,password_hash,password_salt,role,name,birth_date,ssn,department,graduation_date) SELECT 'race{index}',password_hash,password_salt,'STUDENT','Concurrency','2005-01-01','RACE-{index}','CS','2027-06-30' FROM users WHERE id=101; INSERT INTO enrollments(student_id,offering_id,grade) SELECT id,101,'A' FROM users WHERE username='race{index}'; INSERT INTO enrollments(student_id,offering_id,grade) SELECT id,102,'B' FROM users WHERE username='race{index}';")
 clients = [Client('race'+str(i)) for i in range(12)]
 with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:
     codes = list(pool.map(lambda client: client.call('/schedule','PUT',valid)[0], clients))
-check('concurrent capacity: eight accepted and four rejected', codes.count(200) == 8 and codes.count(409) == 4)
+check('concurrent capacity: five accepted and seven rejected', codes.count(200) == 5 and codes.count(409) == 7)
 check('MySQL enrollment never exceeds capacity ten', sql('SELECT MAX(n) FROM (SELECT COUNT(*) n FROM enrollments WHERE offering_id>=200 GROUP BY offering_id) x;') == '10')
 check('late submit to newly full course rejected', s.call('/schedule','PUT',valid)[0] == 409)
 sql("DELETE e FROM enrollments e JOIN users u ON e.student_id=u.id WHERE u.username LIKE 'race%'; DELETE FROM users WHERE username LIKE 'race%';")
@@ -141,10 +143,10 @@ check('close rejected while registration transaction in progress', a.call('/admi
 locker.wait(timeout=10)
 check('finance outage simulation enabled', a.call('/admin/billing/availability','POST',{'available':False})[0] == 200)
 code, closure = a.call('/admin/close-registration','POST',{})
-check('close registration commits exactly three submitted students', code == 200 and closure['bills'] == 3)
+check('close registration commits six submitted students', code == 200 and closure['bills'] == 6)
 final = s.call('/schedule')[1]
 check('teacherless primary replaced in alternate priority order', final['primary'] == [201,202,203,204] and final['status'] == 'FINAL')
-check('under enrolled classes cancelled', sql("SELECT COUNT(*) FROM offerings WHERE semester_id=2 AND status='cancelled';") == '26')
+check('five classes open and under-enrolled classes cancel', sql("SELECT GROUP_CONCAT(id ORDER BY id) FROM offerings WHERE semester_id=2 AND status='closed';") == '201,202,203,204,205' and sql("SELECT COUNT(*) FROM offerings WHERE semester_id=2 AND status='cancelled';") == '25')
 check('unsubmitted draft excluded from billing', sql('SELECT COUNT(*) FROM billing_outbox WHERE student_id=104;') == '0')
 check('tuition equals final course fees', sql('SELECT amount_cents FROM billing_outbox WHERE student_id=101;') == '360000')
 for _ in range(30):
@@ -153,18 +155,18 @@ for _ in range(30):
 check('failed billing retained for retry', int(sql("SELECT COUNT(*) FROM billing_outbox WHERE status='PENDING' AND attempts>0;")) > 0)
 a.call('/admin/billing/availability','POST',{'available':True}); a.call('/admin/billing/retry','POST',{})
 for _ in range(40):
-    if sql("SELECT COUNT(*) FROM billing_outbox WHERE status='DELIVERED';") == '3': break
+    if sql("SELECT COUNT(*) FROM billing_outbox WHERE status='DELIVERED';") == '6': break
     time.sleep(.2)
-check('automatic billing delivery recovers after outage', sql("SELECT COUNT(*) FROM billing_outbox WHERE status='DELIVERED';") == '3')
-check('finance receiver receives one record per student semester', sql('SELECT COUNT(*) FROM billing_receipts;') == '3')
+check('automatic billing delivery recovers after outage', sql("SELECT COUNT(*) FROM billing_outbox WHERE status='DELIVERED';") == '6')
+check('finance receiver receives one record per student semester', sql('SELECT COUNT(*) FROM billing_receipts;') == '6')
 # Simulate the sender losing a successful response: replay delivery must remain idempotent.
 sql("UPDATE billing_outbox SET status='PENDING',next_attempt_at=NOW() WHERE student_id=101;")
 for _ in range(30):
     if sql("SELECT status FROM billing_outbox WHERE student_id=101;") == 'DELIVERED': break
     time.sleep(.2)
-check('duplicate delivery does not duplicate billing receipt', sql('SELECT COUNT(*) FROM billing_receipts;') == '3')
+check('duplicate delivery does not duplicate billing receipt', sql('SELECT COUNT(*) FROM billing_receipts;') == '6')
 check('closed registration rejects student changes', s.call('/schedule','PUT',valid)[0] == 409)
 check('closed registration rejects teaching changes', p.call('/teaching','PUT',{'offerings':[]})[0] == 409)
-check('repeated closure rejected without duplicate bills', a.call('/admin/close-registration','POST',{})[0] == 409 and sql('SELECT COUNT(*) FROM billing_outbox;') == '3')
+check('repeated closure rejected without duplicate bills', a.call('/admin/close-registration','POST',{})[0] == 409 and sql('SELECT COUNT(*) FROM billing_outbox;') == '6')
 check('logout invalidates session', s.call('/logout','POST',{})[0] == 200 and s.call('/me')[0] == 401)
 print(json.dumps({'passed':len(results),'seconds':round(time.perf_counter()-start,2),'tests':results},ensure_ascii=False,indent=2))
