@@ -152,7 +152,7 @@ cmake --build build -j2
 ctest --test-dir build --output-on-failure
 ```
 
-创建 `registration` 数据库、应用账号，将 database 下三个 SQL 文件按编号导入；为应用账号授予 `registration.*` 的 CRUD 权限和 `legacy_catalog.*` 的 SELECT 权限。运行前设置 `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD`、`DB_NAME`、`DEMO_PASSWORD`、`BILLING_KEY`，在工程根目录运行 `./build/registration`。默认仅监听 `127.0.0.1:8080`。
+创建 `registration` 数据库、应用账号，将 database 下四个 SQL 文件按编号导入；为应用账号授予 `registration.*` 的 CRUD 权限和 `legacy_catalog.*` 的 SELECT 权限。运行前设置 `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD`、`DB_NAME`、`DEMO_PASSWORD`、`BILLING_KEY`，在工程根目录运行 `./build/registration`。默认仅监听 `127.0.0.1:8080`。
 
 ## 原题适配与边界
 
@@ -180,5 +180,6 @@ ctest --test-dir build --output-on-failure
 7. [配置管理计划](docs/07-配置管理计划.md)
 8. [验收检查清单](docs/08-验收检查清单.md)
 9. [接口说明](docs/09-接口说明.md)
+10. [AI 辅助使用说明](docs/11-AI辅助使用说明.md)
 
 文档按四位成员的姓名标明岗位；实际工作量以组内开发记录为准。
