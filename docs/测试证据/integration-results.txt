@@ -82,7 +82,7 @@ PASS repeated closure rejected without duplicate bills
 PASS logout invalidates session
 {
   "passed": 82,
-  "seconds": 9.74,
+  "seconds": 9.95,
   "tests": [
     "health endpoint connects to MySQL",
     "anonymous grade access denied",

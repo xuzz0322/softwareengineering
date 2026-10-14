@@ -66,7 +66,7 @@ check('expanded demo contains sixty students and twelve professors', sql("SELECT
 check('seeded submissions match enrolled classes and passed prerequisites', sql("SELECT COUNT(*) FROM schedules WHERE semester_id=2 AND status='SUBMITTED';") == '5' and sql("SELECT COUNT(*) FROM enrollments WHERE student_id IN (2005,2006,2007) AND offering_id IN (201,202,203,205);") == '12' and sql("SELECT COUNT(*) FROM enrollments WHERE student_id IN (2005,2006,2007) AND offering_id IN (101,102) AND grade IN ('A','B','C','D');") == '6')
 new_student = Client('student60'); new_professor = Client('prof12')
 check('new demo accounts can log in and professor has assigned course', new_student.call('/me')[1]['user']['role'] == 'STUDENT' and len(new_professor.call('/teaching')[1]) == 1)
-check('catalog includes prerequisites and teachers', len(s.call('/offerings')[1]['offerings']) == 30)
+check('catalog includes prerequisites and teachers', len(s.call('/offerings')[1]['offerings']) == 31)
 check('submitting fewer than four primary choices denied', s.call('/schedule','PUT',{'primary':[201], 'alternates':[], 'submit':True})[0] == 400)
 check('missing prerequisite denied', s.call('/schedule','PUT',{'primary':[201,202,203,208], 'alternates':[204,205], 'submit':True})[0] == 409)
 check('failed submission leaves no partial enrollment', sql('SELECT COUNT(*) FROM enrollments WHERE student_id=101 AND offering_id>=200;') == '0')
@@ -146,7 +146,7 @@ code, closure = a.call('/admin/close-registration','POST',{})
 check('close registration commits six submitted students', code == 200 and closure['bills'] == 6)
 final = s.call('/schedule')[1]
 check('teacherless primary replaced in alternate priority order', final['primary'] == [201,202,203,204] and final['status'] == 'FINAL')
-check('five classes open and under-enrolled classes cancel', sql("SELECT GROUP_CONCAT(id ORDER BY id) FROM offerings WHERE semester_id=2 AND status='closed';") == '201,202,203,204,205' and sql("SELECT COUNT(*) FROM offerings WHERE semester_id=2 AND status='cancelled';") == '25')
+check('five classes open and under-enrolled classes cancel', sql("SELECT GROUP_CONCAT(id ORDER BY id) FROM offerings WHERE semester_id=2 AND status='closed';") == '201,202,203,204,205' and sql("SELECT COUNT(*) FROM offerings WHERE semester_id=2 AND status='cancelled';") == '26')
 check('unsubmitted draft excluded from billing', sql('SELECT COUNT(*) FROM billing_outbox WHERE student_id=104;') == '0')
 check('tuition equals final course fees', sql('SELECT amount_cents FROM billing_outbox WHERE student_id=101;') == '360000')
 for _ in range(30):

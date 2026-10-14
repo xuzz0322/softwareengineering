@@ -324,6 +324,8 @@ p { line-height: 1.7; }
 }
 .course-card.chosen { border-color: #8ca0ba; box-shadow: 0 0 0 2px #a0b4ce30, var(--shadow); }
 .course-card.chosen::before { background: #315a91; }
+.course-card.time-conflict { border-color: #d7958f; box-shadow: 0 0 0 2px rgba(173, 81, 71, .09); }
+.course-card.time-conflict::before { background: #ad5147; }
 .course-card:hover { transform: translateY(-3px); box-shadow: 0 22px 40px rgba(18, 43, 75, .11); }
 .course-code {
   display: inline-flex;
@@ -363,6 +365,9 @@ p { line-height: 1.7; }
 .course-actions { padding-top: 17px; }
 .course-actions .btn { min-height: 41px; }
 .course-hint { background: #fff6e8; color: #806036; }
+.course-hint.time-conflict-hint { background: #fff0ee; color: #99443d; font-weight: 600; }
+.teaching-conflict-summary { display: flex; flex-wrap: wrap; gap: 7px 12px; margin: -5px 0 19px; padding: 13px 16px; border: 1px solid #e7b5ae; border-radius: 12px; background: #fff3f1; color: #914038; font-size: 12px; line-height: 1.6; }
+.teaching-conflict-summary.clear { border-color: #c9d9cc; background: #f0f7f1; color: #366349; }
 .sticky-actions {
   bottom: 20px;
   padding: 17px 23px;

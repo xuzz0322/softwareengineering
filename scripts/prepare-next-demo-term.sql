@@ -18,7 +18,8 @@ INSERT INTO offerings
  (405,3,7,'01',14,5,1,2,'博文楼 201',10,'open'),
  (406,3,8,'01',11,3,5,6,'明理楼 401',10,'open'),
  (407,3,9,'01',NULL,2,7,8,'博文楼 305',10,'open'),
- (408,3,10,'01',11,4,7,8,'知行楼 301',10,'open');
+ (408,3,10,'01',11,4,7,8,'知行楼 301',10,'open'),
+ (409,3,1,'02',NULL,1,1,2,'明理楼 102',10,'open');
 
 -- Three added students have passed both CS101 and CS201. Existing students
 -- 02 and 03 already have these grades in the completed first semester.

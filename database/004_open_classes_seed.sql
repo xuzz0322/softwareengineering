@@ -22,4 +22,10 @@ INSERT INTO enrollments (student_id,offering_id) VALUES
  (2005,201),(2005,202),(2005,203),(2005,205),
  (2006,201),(2006,202),(2006,203),(2006,205),
  (2007,201),(2007,202),(2007,203),(2007,205);
+
+-- An unassigned section overlaps professor prof01's software engineering
+-- class. It lets the teaching page demonstrate a visible timetable clash.
+INSERT INTO offerings
+ (id,semester_id,course_id,section,professor_id,day,start_slot,end_slot,room,capacity,status) VALUES
+ (321,2,1,'02',NULL,1,1,2,'明理楼 102',10,'open');
 COMMIT;
